@@ -2,13 +2,7 @@
   <div id="dataTable">
     <slot name="filter" />
     <div class="dataTable">
-      <b-spinner
-        v-if="loading"
-        variant="primary"
-        label="Spinning"
-      />
       <slot
-        v-if="!loading"
         name="quickFilter"
       />
 
@@ -19,7 +13,7 @@
         Items in table: {{ rows }}
       </h6>
       <b-table
-        v-if="!loading"
+        :busy="loading"
         :small="small"
         :items="items"
         :per-page="perPage"
@@ -28,7 +22,30 @@
         :fields="fields"
         sticky-header="calc(100vh - 17rem)"
         hover
+        show-empty
       >
+        <template
+          v-slot:table-busy
+        >
+          <div
+            class="text-center text-dark my-1"
+          >
+            <b-spinner
+              class="align-middle"
+            >
+            </b-spinner>
+
+            <strong>Loading...</strong>
+          </div>
+        </template>
+
+        <template
+            v-slot:empty="scope"
+            style="font-size: 11px"
+        >
+          <h4>{{ scope.emptyFilteredText }}</h4>
+        </template>
+
         <template
           :slot="badgedItem"
           slot-scope="row"
@@ -42,8 +59,8 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="!loading"
         v-model="currentPage"
+        :disabled="loading"
         :total-rows="rows"
         :per-page="perPage"
         align="center"
@@ -110,6 +127,10 @@ export default {
   font-size: 12px;
   white-space: nowrap;
   position: relative;
+}
+
+.dataTable .b-table-empty-row {
+  height: 1000px;
 }
 
 .dataTable .datatable-total {

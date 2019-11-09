@@ -24,8 +24,8 @@
             :time-picker="timePicker"
             :linked-calendars="linkedCalendars"
             @update="updateValues"
+            @toggle="toggleIfNotLoading"
           >
-            >
             <div
               slot="input"
               slot-scope="picker"
@@ -35,6 +35,7 @@
             </div>
           </date-range-picker>
           <b-button
+            :disabled="loading"
             type="reset"
             variant="light"
             size="sm"
@@ -267,6 +268,11 @@ export default {
     },
     resetCdrFilter() {
       this.$store.dispatch('setCdrFilter', this.filterValue);
+    },
+    toggleIfNotLoading() {
+      if (this.loading) {
+        this.$refs.picker.open = false
+      }
     },
   },
 };
